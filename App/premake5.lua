@@ -9,37 +9,37 @@ targetdir("../bin/" .. outputdir .. "/%{prj.name}")
 objdir("../build/" .. outputdir .. "/%{prj.name}")
 
 files({
-	"source/**.h",
-	"source/**.cpp",
+    "source/**.h",
+    "source/**.cpp",
 })
 
 includedirs({
-	"../App-Core/source",
-	"../vendor/raylib/include",
-	"../vendor/imgui/include",
+    "../App-Core/source",
+    "../vendor/raylib/include",
+    "../vendor/imgui/include",
 })
 
 libdirs({
-	"../vendor/raylib/lib",
-	"../vendor/imgui/lib",
+    "../vendor/raylib/lib",
+    "../vendor/imgui/lib",
 })
 
 links({
-	"App-Core",
-	"raylib",
-	"imgui",
+    "App-Core",
+    "raylib",
+    "imgui",
 })
 
 postbuildcommands({
-	"cp -r assets/ %{cfg.buildtarget.directory}",
-	"cp ../imgui.ini %{cfg.buildtarget.directory}",
+    "cp -r assets/ %{cfg.buildtarget.directory}",
+    --"cp ../imgui.ini %{cfg.buildtarget.directory}",
 })
 
 filter("system:Unix")
 system("linux")
 systemversion("latest")
 defines({
-	"PLATFORM_LINUX",
+    "PLATFORM_LINUX",
 })
 
 filter("configurations:Debug")

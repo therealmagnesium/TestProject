@@ -10,6 +10,7 @@ public:
     Game(ApplicationSpecification& spec);
 
     void OnUpdate() override;
+    void OnRender() override;
 
 private:
     Camera2D m_camera;

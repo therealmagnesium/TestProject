@@ -1,6 +1,12 @@
 #pragma once
 #include "Base.h"
+#include "Entity.h"
+#include "EntityManager.h"
+
+#include <raylib.h>
 #include <string>
+
+using namespace Scene;
 
 namespace Core
 {
@@ -26,6 +32,10 @@ namespace Core
         void Run();
         void Quit();
 
+        inline const ApplicationSpecification& GetSpecification() const { return m_specification; }
+        inline void SetPrimaryCamera(Camera2D* camera) { m_primaryCamera = camera; }
+        inline std::shared_ptr<Entity> CreateEntity(const char* tag) { return m_entityManager.AddEntity(tag); }
+
     protected:
         virtual void OnUpdate() {};
         virtual void OnRender() {};
@@ -34,7 +44,7 @@ namespace Core
     private:
         bool m_isRunning = true;
         ApplicationSpecification m_specification;
+        EntityManager m_entityManager;
+        Camera2D* m_primaryCamera = NULL;
     };
 }
-
-extern Core::Application App;

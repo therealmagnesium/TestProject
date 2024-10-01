@@ -27,6 +27,14 @@ namespace Core
         if (!appInitialized)
         {
             TraceLog(LOG_FATAL, "Cannot run the application because it's not initialized!");
+            this->Quit();
+            return;
+        }
+
+        if (!m_primaryCamera)
+        {
+            TraceLog(LOG_FATAL, "Cannot run the application because no primary camera is set!");
+            this->Quit();
             return;
         }
 
@@ -36,16 +44,22 @@ namespace Core
             if (IsKeyPressed(KEY_ESCAPE))
                 this->Quit();
 
+            m_entityManager.Update();
             this->OnUpdate();
 
             BeginDrawing();
             {
-                ClearBackground({15, 15, 25, 255});
-                this->OnRender();
+                BeginMode2D(*m_primaryCamera);
+                {
+                    ClearBackground({15, 15, 25, 255});
+                    m_entityManager.DrawEntities();
+                    this->OnRender();
+                }
+                EndMode2D();
+
+                this->OnRenderUI();
             }
             EndDrawing();
-
-            this->OnRenderUI();
         }
     }
 
