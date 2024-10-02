@@ -4,6 +4,8 @@
 namespace Core
 {
     static bool appInitialized = false;
+    Application* Application::s_instance = NULL;
+    Application* App;
 
     Application::Application(ApplicationSpecification& spec) : m_specification(spec)
     {
@@ -12,6 +14,8 @@ namespace Core
             TraceLog(LOG_ERROR, "Application cannot be initialized more than once!");
             return;
         }
+
+        App = s_instance = this;
 
         InitWindow(m_specification.windowWidth, m_specification.windowHeight, m_specification.name.c_str());
         SetTargetFPS(60);
@@ -40,6 +44,8 @@ namespace Core
 
         while (m_isRunning)
         {
+            m_currentFrame++;
+
             m_isRunning = !WindowShouldClose();
             if (IsKeyPressed(KEY_ESCAPE))
                 this->Quit();
@@ -61,6 +67,8 @@ namespace Core
             }
             EndDrawing();
         }
+
+        this->OnShutdown();
     }
 
     void Application::Quit() { m_isRunning = false; }

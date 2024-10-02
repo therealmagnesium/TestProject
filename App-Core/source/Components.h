@@ -31,17 +31,17 @@ namespace Scene
         bool isEnabled = false;
         Vector2 origin = {0.f, 0.f};
         Rectangle source;
-        Texture2D texture;
-        Color tint;
+        Texture2D* texture = NULL;
+        Color tint = WHITE;
 
         SpriteRendererComponent() = default;
-        SpriteRendererComponent(const std::string& path)
+        SpriteRendererComponent(Texture2D* texture)
         {
-            if (!path.empty())
-                texture = LoadTexture(path.c_str());
-
-            tint = WHITE;
-            source = {0.f, 0.f, (float)texture.width, (float)texture.height};
+            if (texture)
+            {
+                source = {0.f, 0.f, (float)texture->width, (float)texture->height};
+                this->texture = texture;
+            }
         }
     };
 

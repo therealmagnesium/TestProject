@@ -51,14 +51,17 @@ namespace Scene
 
                 if (entity->IsActive() && src.isEnabled)
                 {
-                    if (src.texture.id != 0)
+                    if (src.texture && src.texture->id != 0)
                     {
                         Rectangle dest = {tc.position.x, tc.position.y, src.source.width * tc.scale.x,
                                           src.source.height * tc.scale.y};
-                        DrawTexturePro(src.texture, src.source, dest, src.origin, tc.rotation, src.tint);
+                        DrawTexturePro(*src.texture, src.source, dest, src.origin, tc.rotation, src.tint);
                     }
                     else
-                        DrawRectanglePro({tc.position.x, tc.position.y, 64.f, 64.f}, src.origin, tc.rotation, src.tint);
+                    {
+                        Rectangle rect = {tc.position.x, tc.position.y, 64.f * tc.scale.x, 64.f * tc.scale.y};
+                        DrawRectanglePro(rect, src.origin, tc.rotation, src.tint);
+                    }
                 }
             }
         }

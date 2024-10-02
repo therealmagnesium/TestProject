@@ -11,6 +11,7 @@ public:
 
     void OnUpdate() override;
     void OnRender() override;
+    void OnShutdown() override;
 
 private:
     Camera2D m_camera;
