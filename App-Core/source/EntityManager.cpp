@@ -37,6 +37,22 @@ namespace Scene
         }
 
         m_toAdd.clear();
+
+        for (u64 i = 0; i < m_entities.size(); i++)
+        {
+            std::shared_ptr<Entity> entity = m_entities[i];
+            if (entity->HasComponent<SpriteRendererComponent>() && entity->HasComponent<AnimatorComponent>())
+            {
+                SpriteRendererComponent& src = entity->GetComponent<SpriteRendererComponent>();
+                AnimatorComponent& ac = entity->GetComponent<AnimatorComponent>();
+
+                if (entity->IsActive() && src.isEnabled && ac.isEnabled)
+                {
+                    ac.animations[ac.animationIndex].Update();
+                    src.source = ac.animations[ac.animationIndex].GetSource();
+                }
+            }
+        }
     }
 
     void EntityManager::DrawEntities()

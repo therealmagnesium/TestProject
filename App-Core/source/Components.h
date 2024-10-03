@@ -1,6 +1,8 @@
 #pragma once
+#include "Animation.h"
 #include <raylib.h>
 #include <string>
+#include <vector>
 
 namespace Scene
 {
@@ -43,6 +45,26 @@ namespace Scene
                 this->texture = texture;
             }
         }
+    };
+
+    struct AnimatorComponent
+    {
+        bool isEnabled = false;
+        u32 animationIndex = 0;
+        std::vector<Animation> animations;
+
+        AnimatorComponent() = default;
+        AnimatorComponent(const Animation* animations, u32 animationCount)
+        {
+            this->animations.resize(animationCount);
+
+            for (u32 i = 0; i < animationCount; i++)
+                this->animations[i] = animations[i];
+        }
+
+        inline void Play() { animations[animationIndex].Play(); }
+        inline void Stop() { animations[animationIndex].Stop(); }
+        inline void SetAnimationIndex(u32 animationIndex) { this->animationIndex = animationIndex; }
     };
 
 }

@@ -9,7 +9,7 @@
 
 namespace Scene
 {
-    typedef std::tuple<TransformComponent, SpriteRendererComponent> ComponentTuple;
+    typedef std::tuple<TransformComponent, SpriteRendererComponent, AnimatorComponent> ComponentTuple;
 
     class Entity
     {
