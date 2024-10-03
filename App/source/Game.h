@@ -1,4 +1,6 @@
 #pragma once
+#include "Player.h"
+
 #include <Application.h>
 #include <raylib.h>
 
@@ -14,5 +16,6 @@ public:
     void OnShutdown() override;
 
 private:
+    Player m_player;
     Camera2D m_camera;
 };

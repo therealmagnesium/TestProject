@@ -69,8 +69,8 @@ namespace Scene
                 {
                     if (src.texture && src.texture->id != 0)
                     {
-                        Rectangle dest = {tc.position.x, tc.position.y, src.source.width * tc.scale.x,
-                                          src.source.height * tc.scale.y};
+                        Rectangle dest = {tc.position.x, tc.position.y, abs(src.source.width) * tc.scale.x,
+                                          abs(src.source.height) * tc.scale.y};
                         DrawTexturePro(*src.texture, src.source, dest, src.origin, tc.rotation, src.tint);
                     }
                     else

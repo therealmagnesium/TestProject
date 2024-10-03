@@ -10,10 +10,6 @@
 using namespace Core;
 using namespace Scene;
 
-std::shared_ptr<Entity> entity;
-static Texture2D tex;
-static Animation anims[5];
-
 Game::Game(ApplicationSpecification& spec) : Application(spec)
 {
     const ApplicationSpecification& appInfo = this->GetSpecification();
@@ -24,21 +20,11 @@ Game::Game(ApplicationSpecification& spec) : Application(spec)
     m_camera.rotation = 0.f;
     this->SetPrimaryCamera(&m_camera);
 
-    tex = LoadTexture("assets/textures/sunnyland/Packs/Sunnyland/spritesheets/player.png");
-    anims[0] = Animation(10, 4, 0, 11, 6, 0, tex);
-    anims[1] = Animation(10, 6, 0, 11, 6, 1, tex);
-    anims[2] = Animation(6, 3, 0, 12, 6, 3, tex);
-
-    entity = this->CreateEntity("Entity");
-    entity->AddComponent<TransformComponent>((Vector2){100.f, 100.f}, 0.f, (Vector2){4.f, 4.f});
-    entity->AddComponent<SpriteRendererComponent>(&tex);
-    auto& ac = entity->AddComponent<AnimatorComponent>(anims, 5);
-    ac.SetAnimationIndex(1);
-    ac.Play();
+    m_player = CreatePlayer();
 }
 
-void Game::OnUpdate() {}
+void Game::OnUpdate() { m_player.Update(); }
 
 void Game::OnRender() {}
 
-void Game::OnShutdown() { UnloadTexture(tex); }
+void Game::OnShutdown() { FreePlayer(m_player); }

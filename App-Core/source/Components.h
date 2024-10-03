@@ -64,7 +64,11 @@ namespace Scene
 
         inline void Play() { animations[animationIndex].Play(); }
         inline void Stop() { animations[animationIndex].Stop(); }
-        inline void SetAnimationIndex(u32 animationIndex) { this->animationIndex = animationIndex; }
+        inline void SetAnimationIndex(u32 animationIndex)
+        {
+            this->animationIndex = animationIndex;
+            animations[this->animationIndex].Play();
+        }
     };
 
 }
