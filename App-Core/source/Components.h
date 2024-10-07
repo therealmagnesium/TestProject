@@ -31,14 +31,16 @@ namespace Scene
     struct SpriteRendererComponent
     {
         bool isEnabled = false;
-        Vector2 origin = {0.f, 0.f};
+        Vector2 origin;
         Rectangle source;
         Texture2D* texture = NULL;
         Color tint = WHITE;
 
         SpriteRendererComponent() = default;
-        SpriteRendererComponent(Texture2D* texture)
+        SpriteRendererComponent(Texture2D* texture, Vector2 origin = {0.f, 0.f})
         {
+            this->origin = origin;
+
             if (texture)
             {
                 source = {0.f, 0.f, (float)texture->width, (float)texture->height};
@@ -54,12 +56,15 @@ namespace Scene
         std::vector<Animation> animations;
 
         AnimatorComponent() = default;
-        AnimatorComponent(const Animation* animations, u32 animationCount)
+        AnimatorComponent(const Animation* animations, u32 animationCount, bool playOnLoad = false)
         {
             this->animations.resize(animationCount);
 
             for (u32 i = 0; i < animationCount; i++)
                 this->animations[i] = animations[i];
+
+            if (playOnLoad)
+                this->animations[animationIndex].Play();
         }
 
         inline void Play() { animations[animationIndex].Play(); }
@@ -74,6 +79,7 @@ namespace Scene
     struct BoxColliderComponent
     {
         bool isEnabled = false;
+        bool drawCollider = true;
         Rectangle box;
         Vector2 offset = {0.f, 0.f};
         float left = 0.f;
@@ -95,6 +101,27 @@ namespace Scene
             right = box.x + box.width;
             top = box.y;
             bottom = box.y + box.height;
+        }
+    };
+
+    struct RigidbodyComponent
+    {
+        bool isEnabled = false;
+        float mass = 1.f;
+        float gravityScale = 1.f;
+        float drag = 1.f;
+        Vector2 velocity;
+        Vector2 position;
+
+        RigidbodyComponent() = default;
+        RigidbodyComponent(float xVelocity, float yVelocity) { this->velocity = (v2){xVelocity, yVelocity}; }
+        RigidbodyComponent(Vector2 velocity, float mass = 1.f, float gravityScale = 1.f, float drag = 1.f)
+        {
+            this->position = (v2){0.f, 0.f};
+            this->velocity = velocity;
+            this->mass = mass;
+            this->gravityScale = gravityScale;
+            this->drag = drag;
         }
     };
 

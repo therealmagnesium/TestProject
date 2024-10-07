@@ -18,6 +18,12 @@ typedef uint64_t u64;
 
 typedef bool b8;
 
+typedef struct Vector2 v2;
+typedef struct Vector3 v3;
+typedef struct Vector4 v4;
+
+#define GRAVITY 9.80665f
+
 #define V2_FMT "<%.3f, %.3f>"
 #define V3_FMT "<%.3f, %.3f, %.3f>"
 #define V4_FMT "<%.3f, %.3f, %.3f, %.3f>"

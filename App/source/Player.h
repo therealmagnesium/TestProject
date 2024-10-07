@@ -20,8 +20,8 @@ struct Player
 {
     std::shared_ptr<Entity> entity;
     float moveSpeed = 400.f;
+    float jumpForce = 10.f;
     bool isGrounded = false;
-    Vector2 velocity = {0.f, 0.f};
     Texture2D* texture;
     Animation animations[ANIM_PLAYER_COUNT];
 

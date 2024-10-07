@@ -7,9 +7,6 @@
 using namespace Core;
 using namespace Scene;
 
-#define GRAVITY 35.f
-#define DRAG 0.7f
-
 Player CreatePlayer()
 {
     Player player;
@@ -21,10 +18,22 @@ Player CreatePlayer()
     player.animations[ANIM_PLAYER_CROUCH] = Animation(6, 3, 0, 12, 6, 3, *player.texture);
 
     player.entity = App->CreateEntity("Player");
-    auto& tc = player.entity->AddComponent<TransformComponent>((Vector2){100.f, 100.f}, 0.f, (Vector2){4.f, 4.f});
-    player.entity->AddComponent<SpriteRendererComponent>(player.texture);
-    player.entity->AddComponent<AnimatorComponent>(player.animations, ANIM_PLAYER_COUNT).Play();
-    player.entity->AddComponent<BoxColliderComponent>(tc, (Vector2){20.f, 22.f}, (Vector2){20.f, 40.f});
+
+    TransformComponent& transform = player.entity->AddComponent<TransformComponent>((v2){100.f, 100.f}, 0.f, (v2){4.f, 4.f});
+
+    SpriteRendererComponent& spriteRenderer = player.entity->AddComponent<SpriteRendererComponent>(player.texture);
+    spriteRenderer.origin = (v2){32.f, 40.f};
+
+    AnimatorComponent& animator = player.entity->AddComponent<AnimatorComponent>(player.animations, ANIM_PLAYER_COUNT);
+    animator.Play();
+
+    BoxColliderComponent& boxCollider = player.entity->AddComponent<BoxColliderComponent>(transform, (v2){15.f, 22.f}, (v2){5.f, 0.f});
+    boxCollider.drawCollider = false;
+
+    RigidbodyComponent& rigidbody = player.entity->AddComponent<RigidbodyComponent>(0.f, 0.f);
+    rigidbody.mass = 2.f;
+    rigidbody.drag = 0.7f;
+    rigidbody.gravityScale = 8.f;
 
     return player;
 }
@@ -38,34 +47,40 @@ void FreePlayer(Player& player)
 
 void Player::Update()
 {
+    const ApplicationSpecification& appInfo = App->GetSpecification();
+
     auto& tc = entity->GetComponent<TransformComponent>();
     auto& src = entity->GetComponent<SpriteRendererComponent>();
     auto& ac = entity->GetComponent<AnimatorComponent>();
     auto& bcc = entity->GetComponent<BoxColliderComponent>();
+    auto& rb = entity->GetComponent<RigidbodyComponent>();
 
     static float idleDirection = 1.f;
     float direction = (float)(IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT));
 
-    velocity.x += moveSpeed * direction;
-    velocity.x *= DRAG;
-    tc.position.x += velocity.x * GetFrameTime();
+    rb.velocity.x += moveSpeed * direction;
+    rb.velocity.x *= rb.drag;
+    tc.position.x += rb.velocity.x * GetFrameTime();
 
-    velocity.y += GRAVITY;
+    rb.velocity.y += GRAVITY * rb.gravityScale;
 
-    if (bcc.bottom > App->GetSpecification().windowHeight)
+    if (bcc.bottom > appInfo.windowHeight)
     {
-        velocity.y = 0.f;
+        rb.velocity.y = 0.f;
         isGrounded = true;
-        tc.position.y = App->GetSpecification().windowHeight - bcc.box.height - bcc.offset.y;
+        tc.position.y = appInfo.windowHeight - bcc.box.height - bcc.offset.y;
     }
 
     if (IsKeyPressed(KEY_UP) && isGrounded)
     {
-        velocity.y = -1000.f;
+        rb.velocity.y = -jumpForce * rb.mass * GRAVITY * rb.gravityScale;
         isGrounded = false;
     }
 
-    tc.position.y += velocity.y * GetFrameTime();
+    if (IsKeyPressed(KEY_B))
+        bcc.drawCollider = !bcc.drawCollider;
+
+    tc.position.y += rb.velocity.y * GetFrameTime();
 
     if (direction != 0.f)
     {

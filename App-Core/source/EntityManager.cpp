@@ -83,8 +83,7 @@ namespace Scene
                 {
                     if (src.texture && src.texture->id != 0)
                     {
-                        Rectangle dest = {tc.position.x, tc.position.y, abs(src.source.width) * tc.scale.x,
-                                          abs(src.source.height) * tc.scale.y};
+                        Rectangle dest = {tc.position.x, tc.position.y, abs(src.source.width) * tc.scale.x, abs(src.source.height) * tc.scale.y};
                         DrawTexturePro(*src.texture, src.source, dest, src.origin, tc.rotation, src.tint);
                     }
                     else
@@ -98,11 +97,19 @@ namespace Scene
             if (entity->HasComponent<BoxColliderComponent>())
             {
                 BoxColliderComponent& bcc = entity->GetComponent<BoxColliderComponent>();
-                DrawRectangleLinesEx(bcc.box, 6.f, GREEN);
+
+                if (bcc.drawCollider)
+                    DrawRectangleLinesEx(bcc.box, 6.f, GREEN);
             }
         }
     }
 
-    EntityVec& EntityManager::GetEntities() { return m_entities; }
-    EntityVec& EntityManager::GetEntities(const char* tag) { return m_entityMap[tag]; }
+    EntityVec& EntityManager::GetEntities()
+    {
+        return m_entities;
+    }
+    EntityVec& EntityManager::GetEntities(const char* tag)
+    {
+        return m_entityMap[tag];
+    }
 }
