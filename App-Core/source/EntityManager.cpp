@@ -52,6 +52,20 @@ namespace Scene
                     src.source = ac.animations[ac.animationIndex].GetSource();
                 }
             }
+
+            if (entity->HasComponent<BoxColliderComponent>() && entity->HasComponent<TransformComponent>())
+            {
+                TransformComponent& tc = entity->GetComponent<TransformComponent>();
+                BoxColliderComponent& bcc = entity->GetComponent<BoxColliderComponent>();
+
+                bcc.box.x = tc.position.x + bcc.offset.x;
+                bcc.box.y = tc.position.y + bcc.offset.y;
+
+                bcc.left = bcc.box.x;
+                bcc.right = bcc.box.x + bcc.box.width;
+                bcc.top = bcc.box.y;
+                bcc.bottom = bcc.box.y + bcc.box.height;
+            }
         }
     }
 
@@ -79,6 +93,12 @@ namespace Scene
                         DrawRectanglePro(rect, src.origin, tc.rotation, src.tint);
                     }
                 }
+            }
+
+            if (entity->HasComponent<BoxColliderComponent>())
+            {
+                BoxColliderComponent& bcc = entity->GetComponent<BoxColliderComponent>();
+                DrawRectangleLinesEx(bcc.box, 6.f, GREEN);
             }
         }
     }

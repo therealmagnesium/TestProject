@@ -26,5 +26,10 @@ Game::Game(ApplicationSpecification& spec) : Application(spec)
 void Game::OnUpdate() { m_player.Update(); }
 
 void Game::OnRender() {}
+void Game::OnRenderUI()
+{
+    const char* message = TextFormat("Is Grounded: %d", m_player.isGrounded);
+    DrawText(message, 20, 20, 48, YELLOW);
+}
 
 void Game::OnShutdown() { FreePlayer(m_player); }

@@ -1,9 +1,14 @@
 #include "Player.h"
+#include "Base.h"
 
 #include <Application.h>
 #include <raylib.h>
 
 using namespace Core;
+using namespace Scene;
+
+#define GRAVITY 35.f
+#define DRAG 0.7f
 
 Player CreatePlayer()
 {
@@ -16,9 +21,10 @@ Player CreatePlayer()
     player.animations[ANIM_PLAYER_CROUCH] = Animation(6, 3, 0, 12, 6, 3, *player.texture);
 
     player.entity = App->CreateEntity("Player");
-    player.entity->AddComponent<TransformComponent>((Vector2){100.f, 100.f}, 0.f, (Vector2){4.f, 4.f});
+    auto& tc = player.entity->AddComponent<TransformComponent>((Vector2){100.f, 100.f}, 0.f, (Vector2){4.f, 4.f});
     player.entity->AddComponent<SpriteRendererComponent>(player.texture);
     player.entity->AddComponent<AnimatorComponent>(player.animations, ANIM_PLAYER_COUNT).Play();
+    player.entity->AddComponent<BoxColliderComponent>(tc, (Vector2){20.f, 22.f}, (Vector2){20.f, 40.f});
 
     return player;
 }
@@ -35,11 +41,31 @@ void Player::Update()
     auto& tc = entity->GetComponent<TransformComponent>();
     auto& src = entity->GetComponent<SpriteRendererComponent>();
     auto& ac = entity->GetComponent<AnimatorComponent>();
+    auto& bcc = entity->GetComponent<BoxColliderComponent>();
 
     static float idleDirection = 1.f;
     float direction = (float)(IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT));
-    velocity.x = moveSpeed * direction;
+
+    velocity.x += moveSpeed * direction;
+    velocity.x *= DRAG;
     tc.position.x += velocity.x * GetFrameTime();
+
+    velocity.y += GRAVITY;
+
+    if (bcc.bottom > App->GetSpecification().windowHeight)
+    {
+        velocity.y = 0.f;
+        isGrounded = true;
+        tc.position.y = App->GetSpecification().windowHeight - bcc.box.height - bcc.offset.y;
+    }
+
+    if (IsKeyPressed(KEY_UP) && isGrounded)
+    {
+        velocity.y = -1000.f;
+        isGrounded = false;
+    }
+
+    tc.position.y += velocity.y * GetFrameTime();
 
     if (direction != 0.f)
     {

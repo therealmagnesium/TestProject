@@ -71,4 +71,31 @@ namespace Scene
         }
     };
 
+    struct BoxColliderComponent
+    {
+        bool isEnabled = false;
+        Rectangle box;
+        Vector2 offset = {0.f, 0.f};
+        float left = 0.f;
+        float right = 0.f;
+        float top = 0.f;
+        float bottom = 0.f;
+
+        BoxColliderComponent() = default;
+        BoxColliderComponent(TransformComponent& transform, Vector2 size, Vector2 offset)
+        {
+            this->offset = offset;
+
+            box.x = transform.position.x + offset.x;
+            box.y = transform.position.y + offset.y;
+            box.width = size.x * transform.scale.x;
+            box.height = size.y * transform.scale.y;
+
+            left = box.x;
+            right = box.x + box.width;
+            top = box.y;
+            bottom = box.y + box.height;
+        }
+    };
+
 }
