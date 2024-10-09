@@ -1,5 +1,6 @@
 #pragma once
 #include "Player.h"
+#include "Tilemap.h"
 
 #include <Application.h>
 #include <raylib.h>
@@ -18,5 +19,6 @@ public:
 
 private:
     Player m_player;
+    Tilemap m_tilemap;
     Camera2D m_camera;
 };

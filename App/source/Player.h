@@ -25,6 +25,8 @@ struct Player
     Texture2D* texture;
     Animation animations[ANIM_PLAYER_COUNT];
 
+    inline TransformComponent& GetTransform() { return entity->GetComponent<TransformComponent>(); }
+
     void Update();
 };
 

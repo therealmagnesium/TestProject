@@ -80,7 +80,8 @@ void Player::Update()
     if (IsKeyPressed(KEY_B))
         bcc.drawCollider = !bcc.drawCollider;
 
-    tc.position.y += rb.velocity.y * GetFrameTime();
+    if (!isGrounded)
+        tc.position.y += rb.velocity.y * GetFrameTime();
 
     if (direction != 0.f)
     {

@@ -24,7 +24,10 @@ namespace Core
         appInitialized = true;
     }
 
-    Application::~Application() { CloseWindow(); }
+    Application::~Application()
+    {
+        CloseWindow();
+    }
 
     void Application::Run()
     {
@@ -71,5 +74,8 @@ namespace Core
         this->OnShutdown();
     }
 
-    void Application::Quit() { m_isRunning = false; }
+    void Application::Quit()
+    {
+        m_isRunning = false;
+    }
 }

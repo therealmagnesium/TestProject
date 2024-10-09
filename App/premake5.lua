@@ -17,17 +17,22 @@ includedirs({
     "../App-Core/source",
     "../vendor/raylib/include",
     "../vendor/imgui/include",
+    "../vendor/tmx/include",
 })
 
 libdirs({
     "../vendor/raylib/lib",
     "../vendor/imgui/lib",
+    "../vendor/tmx/lib",
 })
 
 links({
     "App-Core",
     "raylib",
     "imgui",
+    "tmx",
+    "z",
+    "xml2",
 })
 
 postbuildcommands({
