@@ -1,25 +1,27 @@
 #pragma once
 #include "Base.h"
+#include "Entity.h"
 
+#include <memory>
 #include <tmx.h>
 #include <raylib.h>
+#include <vector>
 
-struct Tile
+namespace Scene
 {
-    u32 id;
-    Vector2 position;
-    Vector2 size;
-    float opacity;
-    tmx_tileset* tileset;
-    void* image;
-};
+    struct Tile
+    {
+        u32 gid;
+        tmx_tileset* tileset;
+        std::shared_ptr<Entity> entity;
+    };
 
-struct Tilemap
-{
-    tmx_map* map;
-};
+    struct Tilemap
+    {
+        tmx_map* map;
+        std::vector<Tile> tiles;
+    };
 
-Tilemap LoadTilemap(const char* path);
-void DrawTile(Tile& tile, Rectangle& source);
-void DrawTilemap(Tilemap& tilemap);
-void FreeTilemap(Tilemap& tilemap);
+    Tilemap LoadTilemap(const char* path);
+    void FreeTilemap(Tilemap& tilemap);
+}

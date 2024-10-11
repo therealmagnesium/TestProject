@@ -28,19 +28,17 @@ Game::Game(ApplicationSpecification& spec) : Application(spec)
 void Game::OnUpdate()
 {
     const ApplicationSpecification& appInfo = this->GetSpecification();
-    m_player.Update();
+    m_player.Update(m_tilemap);
 
     m_camera.target = m_player.GetTransform().position;
 }
 
 void Game::OnRender()
 {
-    DrawTilemap(m_tilemap);
 }
 void Game::OnRenderUI()
 {
-    // const char* message = TextFormat("Player Y: %.3f", m_player.GetTransform().position.y);
-    // DrawText(message, 20, 20, 48, YELLOW);
+    DrawFPS(20, 20);
 }
 
 void Game::OnShutdown()

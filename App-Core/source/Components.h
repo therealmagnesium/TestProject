@@ -102,6 +102,8 @@ namespace Scene
             top = box.y;
             bottom = box.y + box.height;
         }
+
+        inline bool CheckCollisionAABB(BoxColliderComponent& other) { return (right > other.left) && (left < other.right) && (top < other.bottom) && (bottom > other.top); }
     };
 
     struct RigidbodyComponent

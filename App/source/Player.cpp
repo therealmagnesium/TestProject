@@ -45,18 +45,21 @@ void FreePlayer(Player& player)
     player.texture = NULL;
 }
 
-void Player::Update()
+void Player::Update(Tilemap& tilemap)
+{
+    this->HandleMovement();
+    this->Animate();
+    this->HandleCollisions(tilemap);
+}
+
+void Player::HandleMovement()
 {
     const ApplicationSpecification& appInfo = App->GetSpecification();
 
     auto& tc = entity->GetComponent<TransformComponent>();
-    auto& src = entity->GetComponent<SpriteRendererComponent>();
-    auto& ac = entity->GetComponent<AnimatorComponent>();
-    auto& bcc = entity->GetComponent<BoxColliderComponent>();
     auto& rb = entity->GetComponent<RigidbodyComponent>();
 
-    static float idleDirection = 1.f;
-    float direction = (float)(IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT));
+    direction = (float)(IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT));
 
     rb.velocity.x += moveSpeed * direction;
     rb.velocity.x *= rb.drag;
@@ -64,24 +67,21 @@ void Player::Update()
 
     rb.velocity.y += GRAVITY * rb.gravityScale;
 
-    if (bcc.bottom > appInfo.windowHeight)
-    {
-        rb.velocity.y = 0.f;
-        isGrounded = true;
-        tc.position.y = appInfo.windowHeight - bcc.box.height - bcc.offset.y;
-    }
-
     if (IsKeyPressed(KEY_UP) && isGrounded)
     {
         rb.velocity.y = -jumpForce * rb.mass * GRAVITY * rb.gravityScale;
         isGrounded = false;
     }
 
-    if (IsKeyPressed(KEY_B))
-        bcc.drawCollider = !bcc.drawCollider;
-
     if (!isGrounded)
         tc.position.y += rb.velocity.y * GetFrameTime();
+}
+
+void Player::Animate()
+{
+    static float idleDirection = 1.f;
+    auto& ac = entity->GetComponent<AnimatorComponent>();
+    auto& src = entity->GetComponent<SpriteRendererComponent>();
 
     if (direction != 0.f)
     {
@@ -94,4 +94,23 @@ void Player::Update()
         ac.SetAnimationIndex(ANIM_PLAYER_IDLE);
         src.source.width *= idleDirection;
     }
+}
+
+void Player::HandleCollisions(Tilemap& tilemap)
+{
+    const ApplicationSpecification& appInfo = App->GetSpecification();
+
+    auto& tc = entity->GetComponent<TransformComponent>();
+    auto& bcc = entity->GetComponent<BoxColliderComponent>();
+    auto& rb = entity->GetComponent<RigidbodyComponent>();
+
+    if (bcc.bottom > appInfo.windowHeight)
+    {
+        rb.velocity.y = 0.f;
+        isGrounded = true;
+        tc.position.y = appInfo.windowHeight - bcc.box.height - bcc.offset.y;
+    }
+
+    if (IsKeyPressed(KEY_B))
+        bcc.drawCollider = !bcc.drawCollider;
 }
